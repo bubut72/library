@@ -1,27 +1,58 @@
 package com.springbootunleashed.library.service;
 
 import com.springbootunleashed.library.domain.Book;
-import java.util.ArrayList;
+import com.springbootunleashed.library.domain.BookEntity;
+import com.springbootunleashed.library.domain.BookSearch;
+import com.springbootunleashed.library.repository.BookRepository;
+import java.util.Collections;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 @Service
 public class BookServiceImpl implements BookService {
-  private List<Book> books = List.of(new Book("The Great Gatsby", "Fiction", "978-0-7432-7356-5"),
-      new Book("Introduction to Computer Science", "Non-Fiction", "978-0-13-469451-1"),
-      new Book("Cooking Around the World", "Cooking", "978-1-250-12345-6"));
+  private final BookRepository repository;
 
-  @Override
-  public List<Book> getBooks() {
-    return books;
+  public BookServiceImpl(BookRepository repository) {
+    this.repository = repository;
   }
 
   @Override
-  public Book createBook(Book newBook) {
-   List<Book> bookList = new ArrayList<>(books);
-   bookList.add(newBook);
-   this.books = List.copyOf(bookList);
+  public List<BookEntity> getBooks() {
+    return repository.findAll();
+  }
 
-   return newBook;
+  @Override
+  public BookEntity createBook(Book newBook) {
+    return repository.saveAndFlush(new BookEntity(newBook.title(), newBook.category(),
+        newBook.ISBN()));
+  }
+
+  @Override
+  public List<BookEntity> findBooks(BookSearch bookSearch) {
+    Sort sort = Sort.by(Sort.Order.asc("title")); // default sort by title
+
+    if (Boolean.TRUE.equals(bookSearch.sortByTitle().orElse(null)))
+      sort = Sort.by(Sort.Order.asc("title"));
+    else if (Boolean.TRUE.equals(bookSearch.sortByCategory().orElse(null)))
+      sort =  Sort.by(Sort.Order.asc("category"));
+
+
+    if (StringUtils.hasText(bookSearch.title())
+        && StringUtils.hasText(bookSearch.category())) {
+      return repository.findByTitleContainsOrCategoryContainsAllIgnoreCase(
+          bookSearch.title(), bookSearch.category(), sort);
+    }
+
+    if (StringUtils.hasText(bookSearch.title())) {
+      return repository.findByTitleContainsIgnoreCase(bookSearch.title(), sort);
+    }
+
+    if (StringUtils.hasText(bookSearch.category())) {
+      return repository.findByCategoryContainsIgnoreCase(bookSearch.category(), sort);
+    }
+
+    return Collections.emptyList();
   }
 }

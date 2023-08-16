@@ -1,7 +1,10 @@
 package com.springbootunleashed.library.controller;
 
 import com.springbootunleashed.library.domain.Book;
+import com.springbootunleashed.library.domain.BookEntity;
+import com.springbootunleashed.library.domain.BookSearch;
 import com.springbootunleashed.library.service.BookService;
+import java.util.List;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,6 +31,14 @@ public class HomeController {
     bookService.createBook(book);
 
     return "redirect:/";
+  }
+
+  @PostMapping("/find-book")
+  public String bookSearch(@ModelAttribute BookSearch bookSearch, Model model) {
+    List<BookEntity> searchResults = bookService.findBooks(bookSearch);
+    model.addAttribute("books", searchResults);
+
+    return "index";
   }
 
 }
