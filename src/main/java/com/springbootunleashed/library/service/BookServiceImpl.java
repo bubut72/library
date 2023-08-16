@@ -6,6 +6,9 @@ import com.springbootunleashed.library.domain.BookSearch;
 import com.springbootunleashed.library.repository.BookRepository;
 import java.util.Collections;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -30,29 +33,20 @@ public class BookServiceImpl implements BookService {
   }
 
   @Override
-  public List<BookEntity> findBooks(BookSearch bookSearch) {
-    Sort sort = Sort.by(Sort.Order.asc("title")); // default sort by title
+  public Page<BookEntity> findBooks(BookSearch bookSearch, Pageable pageable) {
+    Page<BookEntity> resultPage;
 
-    if (Boolean.TRUE.equals(bookSearch.sortByTitle().orElse(null)))
-      sort = Sort.by(Sort.Order.asc("title"));
-    else if (Boolean.TRUE.equals(bookSearch.sortByCategory().orElse(null)))
-      sort =  Sort.by(Sort.Order.asc("category"));
-
-
-    if (StringUtils.hasText(bookSearch.title())
-        && StringUtils.hasText(bookSearch.category())) {
-      return repository.findByTitleContainsOrCategoryContainsAllIgnoreCase(
-          bookSearch.title(), bookSearch.category(), sort);
+    if (StringUtils.hasText(bookSearch.title()) && StringUtils.hasText(bookSearch.category())) {
+      resultPage = repository.findByTitleContainsOrCategoryContainsAllIgnoreCase(
+          bookSearch.title(), bookSearch.category(), pageable);
+    } else if (StringUtils.hasText(bookSearch.title())) {
+      resultPage = repository.findByTitleContainsIgnoreCase(bookSearch.title(), pageable);
+    } else if (StringUtils.hasText(bookSearch.category())) {
+      resultPage = repository.findByCategoryContainsIgnoreCase(bookSearch.category(), pageable);
+    } else {
+      return new PageImpl<>(Collections.emptyList(), pageable, 0); // Return an empty page
     }
 
-    if (StringUtils.hasText(bookSearch.title())) {
-      return repository.findByTitleContainsIgnoreCase(bookSearch.title(), sort);
-    }
-
-    if (StringUtils.hasText(bookSearch.category())) {
-      return repository.findByCategoryContainsIgnoreCase(bookSearch.category(), sort);
-    }
-
-    return Collections.emptyList();
+    return resultPage;
   }
 }

@@ -2,14 +2,16 @@ package com.springbootunleashed.library.repository;
 
 import com.springbootunleashed.library.domain.BookEntity;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
-  List<BookEntity> findByTitleContainsIgnoreCase(String partialTitle, Sort sortByTitle);
+  Page<BookEntity> findByTitleContainsIgnoreCase(String partialTitle, Pageable pageable);
 
-  List<BookEntity> findByCategoryContainsIgnoreCase(String partialCategory, Sort sortByCategory);
+  Page<BookEntity> findByCategoryContainsIgnoreCase(String partialCategory, Pageable pageable);
 
-  List<BookEntity> findByTitleContainsOrCategoryContainsAllIgnoreCase(String partialTitle,
-      String partialCategory, Sort sort);
+  Page<BookEntity> findByTitleContainsOrCategoryContainsAllIgnoreCase(String partialTitle,
+      String partialCategory, Pageable pageable);
 }

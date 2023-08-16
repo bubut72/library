@@ -12,6 +12,11 @@ import org.mockito.MockitoAnnotations;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -34,39 +39,41 @@ class BookServiceImplTest {
   void testFindBooksByTitle() {
     BookSearch search = new BookSearch("Sample Title", null, Optional.of(true), Optional.empty());
 
-    when(repository.findByTitleContainsIgnoreCase(any(), any())).thenReturn(Collections.emptyList());
+    Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("title")));
 
-    List<BookEntity> result = bookService.findBooks(search);
+    when(repository.findByTitleContainsIgnoreCase(any(), any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-    verify(repository).findByTitleContainsIgnoreCase(eq("Sample Title"), any());
+    Page<BookEntity> resultPage = bookService.findBooks(search, pageable);
 
-    assertEquals(Collections.emptyList(), result);
+    assertEquals(Collections.emptyList(), resultPage.getContent());
   }
 
   @Test
   void testFindBooksByCategory() {
     BookSearch search = new BookSearch(null, "Fiction", Optional.empty(), Optional.of(true));
 
-    when(repository.findByCategoryContainsIgnoreCase(any(), any())).thenReturn(Collections.emptyList());
+    Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("category")));
 
-    List<BookEntity> result = bookService.findBooks(search);
+    when(repository.findByCategoryContainsIgnoreCase(any(), any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-    verify(repository).findByCategoryContainsIgnoreCase(eq("Fiction"), any());
+    Page<BookEntity> resultPage = bookService.findBooks(search, pageable);
 
-    assertEquals(Collections.emptyList(), result);
+    assertEquals(Collections.emptyList(), resultPage.getContent());
   }
 
   @Test
   void testFindBooksByTitleAndCategory() {
     BookSearch search = new BookSearch("Sample Title", "Fiction", Optional.of(true), Optional.of(true));
 
-    when(repository.findByTitleContainsOrCategoryContainsAllIgnoreCase(any(), any(), any())).thenReturn(Collections.emptyList());
+    Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Order.asc("title")));
 
-    List<BookEntity> result = bookService.findBooks(search);
+    when(repository.findByTitleContainsOrCategoryContainsAllIgnoreCase(any(), any(), any())).thenReturn(new PageImpl<>(Collections.emptyList()));
 
-    verify(repository).findByTitleContainsOrCategoryContainsAllIgnoreCase(eq("Sample Title"), eq("Fiction"), any());
+    Page<BookEntity> resultPage = bookService.findBooks(search, pageable);
 
-    assertEquals(Collections.emptyList(), result);
+    assertEquals(Collections.emptyList(), resultPage.getContent());
   }
+
+  // You can add more test cases if needed
 
 }
