@@ -36,17 +36,19 @@ class HomeControllerTest {
 
   @BeforeEach
   public void setUp() {
-    MockitoAnnotations.initMocks(this);
+    MockitoAnnotations.openMocks(this);
   }
 
   @Test
   public void testIndex() {
     List<BookEntity> books = Collections.emptyList();
-    when(bookService.getBooks()).thenReturn(books);
+    Page<BookEntity> pageResult = new PageImpl<>(books);
 
-    String viewName = homeController.index(model);
+    when(bookService.getBooks(any(Pageable.class))).thenReturn(pageResult);
 
-    verify(model).addAttribute("books", books);
+    String viewName = homeController.index(model, 0, 10);
+
+    verify(model).addAttribute("books", pageResult);
     assert viewName != null && viewName.equals("index");
   }
 

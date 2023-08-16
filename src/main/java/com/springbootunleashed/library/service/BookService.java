@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface BookService {
-  public List<BookEntity> getBooks();
+  public Page<BookEntity> getBooks(Pageable pageable);
 
   public BookEntity createBook(Book book);
 

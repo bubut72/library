@@ -4,10 +4,14 @@ import com.springbootunleashed.library.domain.Book;
 import com.springbootunleashed.library.domain.BookEntity;
 import com.springbootunleashed.library.service.BookService;
 import java.util.List;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -19,8 +23,11 @@ public class ApiController {
   }
 
   @GetMapping("/api/books")
-  public List<BookEntity> all() {
-    return bookService.getBooks();
+  public Page<BookEntity> all(@RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    Pageable pageable = PageRequest.of(page, size);
+
+    return bookService.getBooks(pageable);
   }
 
   @PostMapping("/api/books")

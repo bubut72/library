@@ -8,6 +8,9 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -33,13 +36,14 @@ class ApiControllerTest {
   @Test
   void testGetAllBooks() {
     List<BookEntity> books = Collections.emptyList();
+    Page<BookEntity> pageResult = new PageImpl<>(books);
 
-    when(bookService.getBooks()).thenReturn(books);
+    when(bookService.getBooks(any(Pageable.class))).thenReturn(pageResult);
 
-    List<BookEntity> result = apiController.all();
+    Page<BookEntity> result = apiController.all(0, 10);
 
-    verify(bookService).getBooks();
-    assertEquals(books, result);
+    verify(bookService).getBooks(any(Pageable.class));
+    assertEquals(books, result.getContent());
   }
 
   @Test

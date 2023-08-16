@@ -24,8 +24,11 @@ public class HomeController {
   }
 
   @GetMapping("/")
-  public String index(Model model) {
-    model.addAttribute("books", bookService.getBooks());
+  public String index(Model model, @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "10") int size) {
+    Sort sort = Sort.by(Sort.Order.asc("title")); // default sort by title
+    Pageable pageable = PageRequest.of(page, size, sort);
+    model.addAttribute("books", bookService.getBooks(pageable));
 
     return "index";
   }
