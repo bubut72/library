@@ -1,0 +1,32 @@
+<h1>The Library of Congress</h1>
+<p>Welcome to world's biggest library, where words unfold worlds and knowledge awaits your exploration!</p>
+<div id="book-list">
+ <h2>Book List</h2>
+ <ul>
+  {{#books}}
+    <li>{{title}}</li>
+  {{/books}}
+ </ul>
+ </div>
+<div id="book-form">
+  <h3>Add a New Book</h2>
+  <form action="/add-book" method="post">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title" required>
+      <label for="category">Category:</label>
+      <input type="text" id="category" name="category" required>
+      <label for="isbn">ISBN:</label>
+      <input type="text" id="isbn" name="isbn" required>
+      <button type="submit">Add Book</button>
+  </form>
+</div>
+<div id="book-search">
+  <h3>Find a Book</h2>
+  <form action="/find-book" method="post">
+      <label for="title">Title:</label>
+      <input type="text" id="title" name="title">
+      <label for="category">Category:</label>
+      <input type="text" id="category" name="category">
+      <button type="submit">Search</button>
+  </form>
+</div>
