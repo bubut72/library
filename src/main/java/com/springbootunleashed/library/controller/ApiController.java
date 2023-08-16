@@ -23,11 +23,11 @@ public class ApiController {
   }
 
   @GetMapping("/api/books")
-  public Page<BookEntity> all(@RequestParam(defaultValue = "0") int page,
+  public List<BookEntity> all(@RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size) {
     Pageable pageable = PageRequest.of(page, size);
 
-    return bookService.getBooks(pageable);
+    return bookService.getBooks(pageable).getContent();
   }
 
   @PostMapping("/api/books")

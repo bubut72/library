@@ -40,10 +40,10 @@ class ApiControllerTest {
 
     when(bookService.getBooks(any(Pageable.class))).thenReturn(pageResult);
 
-    Page<BookEntity> result = apiController.all(0, 10);
+    List<BookEntity> result = apiController.all(0, 10);
 
     verify(bookService).getBooks(any(Pageable.class));
-    assertEquals(books, result.getContent());
+    assertEquals(books, result);
   }
 
   @Test
