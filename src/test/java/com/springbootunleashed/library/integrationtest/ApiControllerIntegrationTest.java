@@ -41,7 +41,7 @@ public class ApiControllerIntegrationTest {
   }
 
   @Test
-  public void testWireMock() throws Exception {
+  public void testGetBooks() throws Exception {
     // Stub WireMock to simulate an external API response
     stubFor(get(urlEqualTo("/api/books"))
         .willReturn(aResponse()
