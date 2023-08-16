@@ -50,25 +50,13 @@ public class ApiControllerIntegrationTest {
         .willReturn(aResponse()
             .withStatus(HttpStatus.OK.value())
             .withHeader("Content-Type", MediaType.APPLICATION_JSON_VALUE)
-            .withBody("{\n" +
-                "  \"content\": [\n" +
-                "    {\"title\": \"The Great Gatsby\", \"category\": \"Fiction\", \"isbn\": \"978-0-7432-7356-5\"}\n" +
-                "  ],\n" +
-                "  \"totalElements\": 1,\n" +
-                "  \"totalPages\": 1,\n" +
-                "  \"number\": 0,\n" +
-                "  \"size\": 10\n" +
-                "}")));
+            .withBody("[{\"title\": \"The Great Gatsby\", \"category\": \"Fiction\", \"isbn\": \"978-0-7432-7356-5\"}]")));
 
     mockMvc.perform(MockMvcRequestBuilders.get("/api/books"))
         .andExpect(MockMvcResultMatchers.status().isOk())
-        .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].title").value("The Great Gatsby"))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].category").value("Fiction"))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.content[0].isbn").value("978-0-7432-7356-5"))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.totalElements").value(3))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.totalPages").value(1))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.number").value(0))
-        .andExpect(MockMvcResultMatchers.jsonPath("$.size").value(10));
+        .andExpect(MockMvcResultMatchers.jsonPath("$[0].title").value("The Great Gatsby"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$[0].category").value("Fiction"))
+        .andExpect(MockMvcResultMatchers.jsonPath("$[0].isbn").value("978-0-7432-7356-5"));
   }
 
   @Test

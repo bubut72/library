@@ -5,11 +5,9 @@ import com.springbootunleashed.library.domain.BookEntity;
 import com.springbootunleashed.library.domain.BookSearch;
 import com.springbootunleashed.library.repository.BookRepository;
 import java.util.Collections;
-import java.util.List;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 

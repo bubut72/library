@@ -4,7 +4,6 @@ import com.springbootunleashed.library.domain.Book;
 import com.springbootunleashed.library.domain.BookEntity;
 import com.springbootunleashed.library.service.BookService;
 import java.util.List;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
